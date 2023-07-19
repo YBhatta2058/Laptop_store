@@ -103,37 +103,63 @@ def generate_purchase_order_pdf(distributor_name, laptop_name, brand_name, quant
     c.drawString(250, 540, f"${gross_amount}")
 
     c.save()
+'''
+# Function to display laptops available in stock
+def display_laptops_stock(laptops_data):
+    print("\nLaptops Available in Stock:")
+    print("----------------------------")
+    print("{:<15} {:<10} {:<10} {:<10}".format("Laptop", "Brand", "Price", "Quantity"))
+    print("-" * 45)
+    for laptop_info in laptops_data:
+        laptop_name, brand_name, price, quantity, *_ = laptop_info
+        print("{:<15} {:<10} {:<10} {:<10}".format(laptop_name, brand_name, price, quantity))
+'''
+
+# Function to display laptops available in stock
+def display_laptops_stock(laptops_data):
+    print("\nLaptops Available in Stock:")
+    print("----------------------------")
+    print("{:<15} {:<10} {:<10} {:<10} {:<15} {:<15}".format("Laptop", "Brand", "Price", "Quantity", "Processor", "Graphics Card"))
+    print("-" * 75)
+    for laptop_info in laptops_data:
+        laptop_name, brand_name, price, quantity, processor, graphics_card = laptop_info
+        print("{:<15} {:<10} {:<10} {:<10} {:<15} {:<15}".format(laptop_name, brand_name, price, quantity, processor, graphics_card))
+
+
+
 
 # Main function to handle transactions
 def handle_transactions(laptops_data):
     distributor_name = "ITTI Laptop Store, Putalisadak"  # Replace with your laptop shop name
     while True:
-        print("1. Sell Laptop")
-        print("2. Order Laptop")
-        print("3. Exit")
+        print("\n1. Display Laptops Available in Stock")
+        print("2. Sell Laptop")
+        print("3. Order Laptop")
+        print("4. Exit")
         choice = int(input("Enter your choice: "))
 
-        if choice == 1:  # Sell Laptop
+        if choice == 1:  # Display Laptops Available in Stock
+            display_laptops_stock(laptops_data)
+            
+        
+        elif choice == 2:  # Sell Laptop
             laptop_name = input("Enter the laptop name: ")
             brand_name = input("Enter the brand name: ")
             customer_name = input("Enter the customer name: ")
             quantity = int(input("Enter the quantity sold: "))
-            # Find the laptop in the data
+            # Find the laptop in the data and update stock
             for laptop_info in laptops_data:
                 if laptop_info[0] == laptop_name and laptop_info[1] == brand_name:
                     price_per_unit = float(laptop_info[2].replace('$', ''))
                     laptop_info[3] = str(int(laptop_info[3]) - quantity)  # Update stock
-
                     # Generate and save the sales invoice PDF
                     shipping_cost = 50  # You can modify the shipping cost if needed
                     generate_sales_invoice_pdf(laptop_name, brand_name, customer_name, quantity, price_per_unit, shipping_cost)
-                    
                     break
             else:
                 print("Laptop not found in stock!")
 
-
-        elif choice == 2:  # Order Laptop
+        elif choice == 3:  # Order Laptop
             laptop_name = input("Enter the laptop name: ")
             brand_name = input("Enter the brand name: ")
             price = float(input("Enter price: "))
@@ -144,12 +170,13 @@ def handle_transactions(laptops_data):
             # Calculate the price_per_unit based on user input
             price_per_unit = price
 
-            # Find the laptop in the data
+            # Find the laptop in the data and update stock
             for laptop_info in laptops_data:
                 if laptop_info[0] == laptop_name and laptop_info[1] == brand_name:
                     laptop_info[3] = str(int(laptop_info[3]) + quantity)  # Update stock
                     price_per_unit = float(laptop_info[2].replace('$', ''))  # Update price_per_unit if laptop found
                     break
+
             else:
                 # Add a new laptop to the list
                 laptops_data.append([laptop_name, brand_name, f"${price}", str(quantity), processor, card])
@@ -157,9 +184,9 @@ def handle_transactions(laptops_data):
             # Generate and save the purchase order invoice PDF
             generate_purchase_order_pdf(distributor_name, laptop_name, brand_name, quantity, price_per_unit)
 
+        
 
-
-        elif choice == 3:  # Exit
+        elif choice == 4:  # Exit
             break
 
         else:
@@ -168,6 +195,7 @@ def handle_transactions(laptops_data):
     # Update the text file with the updated laptops data
     write_laptops_data("laptops_data.txt", laptops_data)
     print("Data saved successfully!")
+
 
 if __name__ == "__main__":
     # Read laptops data from the text file
