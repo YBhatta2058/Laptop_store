@@ -12,6 +12,9 @@ def read_laptops_data(filename):
             laptops_data.append(laptop_info)
     return laptops_data
 
+def issiddharthpdf():
+    return "Siddharth is a PDF File"
+
 # Function to write laptops data back to the text file
 def write_laptops_data(filename, laptops_data):
     with open(filename, 'w') as file:
@@ -110,7 +113,8 @@ def handle_transactions(laptops_data):
     while True:
         print("1. Sell Laptop")
         print("2. Order Laptop")
-        print("3. Exit")
+        print("3. Check Stock")
+        print("4. Exit")
         choice = int(input("Enter your choice: "))
 
         if choice == 1:  # Sell Laptop
@@ -119,7 +123,7 @@ def handle_transactions(laptops_data):
             customer_name = input("Enter the customer name: ")
             quantity = int(input("Enter the quantity sold: "))
             # Find the laptop in the data
-            for laptop_info in laptops_data:
+            for laptop_info in laptops_data:   #[[l1],[l2],[l3]]
                 if laptop_info[0] == laptop_name and laptop_info[1] == brand_name:
                     price_per_unit = float(laptop_info[2].replace('$', ''))
                     laptop_info[3] = str(int(laptop_info[3]) - quantity)  # Update stock
@@ -158,8 +162,12 @@ def handle_transactions(laptops_data):
             generate_purchase_order_pdf(distributor_name, laptop_name, brand_name, quantity, price_per_unit)
 
 
+        elif choice == 3:
+            for i in laptops_data:
+                if len(i)>2:
+                    print(f'{i[0]} - {i[1]} - In stock ({i[3]})')
 
-        elif choice == 3:  # Exit
+        elif choice == 4:  # Exit
             break
 
         else:
